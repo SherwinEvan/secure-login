@@ -3,6 +3,7 @@ package com.access.auth.controller;
 import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,8 @@ import com.access.auth.loginservice.TokenService;
 import com.access.auth.models.UserModel;
 import com.access.auth.repositories.UserRepo;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -35,7 +38,7 @@ public class LoginController {
 	private final AuthenticationManager authenticationManager;
 
 	@Autowired
-    private PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder;
 
 	public LoginController(TokenService tokenService, AuthenticationManager authenticationManager, UserRepo userRepo,
 			PasswordEncoder passwordEncoder) {
@@ -46,41 +49,41 @@ public class LoginController {
 	}
 
 	@PostMapping("/")
-	public String token(@RequestBody UserModel loginUser) throws Exception {
+	public ResponseEntity<?> token(@RequestBody UserModel loginUser, HttpServletResponse response) throws Exception {
 
 		UserEntity userEntity = userRepo.findByUserName(loginUser.getUserName());
 		if (userEntity.getUserName() != null) {
 			if (!userEntity.isEnabled())
-				return "Active your account to continue.";
+				return ResponseEntity.ok("Activate your account!");
 
-			String enteredPassword = passwordEncoder.encode(loginUser.getPassword());
-			log.info(userEntity.getUserName());
-			log.info(userEntity.getPassword());
-			log.info(loginUser.getUserName());
-			log.info(loginUser.getPassword());
-			log.info(enteredPassword);
+			Authentication authentication = authenticationManager.authenticate(
+					new UsernamePasswordAuthenticationToken(userEntity.getUserName(), userEntity.getPassword()));
+			
+			String accessToken = tokenService.generateToken(authentication);
+			
+			Cookie cookie = new Cookie("access_token", accessToken);
+		    cookie.setMaxAge(864000); // Set cookie to expire in 1 hour
+		    cookie.setPath("/");
+		    cookie.setHttpOnly(true);
+		    response.addCookie(cookie);
 
-			try {
-				return tokenService.generateToken(authenticationManager.authenticate(
-						new UsernamePasswordAuthenticationToken(userEntity.getUserName(), userEntity.getPassword())));
-			} catch (BadCredentialsException e) {
-				throw new Exception("Incorrect username or password", e);
-			}
+			return ResponseEntity.ok("Login successful");
+
 			/*
-			 * if(userEntity.getUserName() == loginUser.getUserName() &&
-			 * userEntity.getPassword() == loginUser.getPassword()) {
+			 * String enteredPassword = passwordEncoder.encode(loginUser.getPassword());
+			 * log.info(userEntity.getUserName()); log.info(userEntity.getPassword());
+			 * log.info(loginUser.getUserName()); log.info(loginUser.getPassword());
+			 * log.info(enteredPassword);
 			 * 
-			 * Authentication authentication = authenticationManager .authenticate(new
-			 * UsernamePasswordAuthenticationToken( userEntity.getUserName(),
-			 * userEntity.getPassword() ) );
-			 * 
-			 * return tokenService.generateToken(authentication);
-			 * 
-			 * }
+			 * try { return tokenService.generateToken(authenticationManager.authenticate(
+			 * new UsernamePasswordAuthenticationToken(userEntity.getUserName(),
+			 * userEntity.getPassword()))); } catch (BadCredentialsException e) { throw new
+			 * Exception("Incorrect username or password", e); } return
+			 * "Invalid Credentials!";
 			 */
 
 		}
-		return "Invalid Credentials!";
+		return ResponseEntity.ok("Invalid Credentials!");
 	}
 
 	@GetMapping("/")
