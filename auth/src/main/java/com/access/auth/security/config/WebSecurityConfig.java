@@ -4,16 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,9 +23,11 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 import com.access.auth.entities.UserEntity;
 import com.access.auth.repositories.UserRepo;
@@ -39,9 +38,6 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
@@ -49,38 +45,38 @@ public class WebSecurityConfig {
 	/*@Autowired
     private UserDetailsService userDetailsService;
 	*/
-	private RSAKey rsaKeys;
+	private static RSAKey rsaKeys;
 	
 	private static final String[] WHITE_LIST_URL = {
 			"/auth/**",
 			"/login/"
 	};
 
-	@Bean 
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(WHITE_LIST_URL).permitAll()
-                        .anyRequest().authenticated()
+                                .requestMatchers(WHITE_LIST_URL).permitAll()
+                                .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-                .exceptionHandling((ex) -> ex
-                	.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-                	.accessDeniedHandler(new BearerTokenAccessDeniedHandler())
+                .exceptionHandling(ex -> ex
+                                .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                                .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
                 )
+                .addFilterAfter(new CookieAuthorizationFilter(jwtDecoder(), new JwtAuthenticationConverter()), SecurityContextPersistenceFilter.class)
                 .build();
-	}
-	
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder(11);
-	}
-	
-	
-	@Bean
-	public JWKSource<SecurityContext> jwkSource() {
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(11);
+    }
+
+
+    @Bean
+    JWKSource<SecurityContext> jwkSource() {
         rsaKeys = Jwks.generateRsa();
         JWKSet jwkSet = new JWKSet(rsaKeys);
         return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
@@ -89,7 +85,7 @@ public class WebSecurityConfig {
 	@Bean
 	JwtDecoder jwtDecoder() throws JOSEException {
         return NimbusJwtDecoder.withPublicKey(rsaKeys.toRSAPublicKey()).build();
-   }
+	}
 	
 	@Bean
 	JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwks) {
@@ -127,4 +123,3 @@ public class WebSecurityConfig {
 	    };
 	}
 }
-	

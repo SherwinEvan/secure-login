@@ -14,19 +14,19 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class RegistrationCompleteListener implements ApplicationListener<RegistrationCompleteEvent>{
-	
+public class RegistrationCompleteListener implements ApplicationListener<RegistrationCompleteEvent> {
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Override
 	public void onApplicationEvent(RegistrationCompleteEvent event) {
 		UserEntity user = event.getUser();
 		String token = UUID.randomUUID().toString();
 		userService.saveVerificationTokenForUser(token, user);
-		
+
 		String url = event.getApplicationUrl() + "/signup/verifyRegistration?token=" + token;
-		
+
 		log.info("Click the link to verify your account : {}", url);
 	}
 

@@ -37,4 +37,3 @@ public class RegistrationCompleteEvent extends ApplicationEvent {
 	}
 
 }
-

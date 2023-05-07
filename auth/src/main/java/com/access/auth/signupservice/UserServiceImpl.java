@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private PasswordResetTokenRepo passwordResetTokenRepo;
-	
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
 		user.setRole("USER");
 
 		userRepo.save(user);
-		
+
 		return user;
 	}
 
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 			verficationTokenRepo.delete(verificationToken);
 			return false;
 		}
-		
+
 		user.setEnabled(true);
 		userRepo.save(user);
 
@@ -74,12 +74,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public VerificationToken generateNewVerificationToken(String oldToken) {
-		
+
 		VerificationToken verificationToken = verficationTokenRepo.findByToken(oldToken);
-		
+
 		verificationToken.setToken(UUID.randomUUID().toString());
 		verficationTokenRepo.save(verificationToken);
-		
+
 		return verificationToken;
 	}
 
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
 	public void createPasswordResetTokenForUser(UserEntity user, String token) {
 		PasswordResetToken passwordResetToken = new PasswordResetToken(user, token);
 		passwordResetTokenRepo.save(passwordResetToken);
-		
+
 	}
 
 	@Override
@@ -102,20 +102,19 @@ public class UserServiceImpl implements UserService {
 		if (passwordResetToken == null)
 			return false;
 
-		UserEntity user = passwordResetToken.getUser();
 		Calendar cal = Calendar.getInstance();
 
 		if (passwordResetToken.getExpirationTime().getTime() - cal.getTime().getTime() <= 0) {
 			passwordResetTokenRepo.delete(passwordResetToken);
 			return false;
 		}
-		
+
 		return true;
 	}
 
 	@Override
 	public Optional<UserEntity> getUserByPasswordResetToken(String token) {
-		
+
 		return Optional.ofNullable(passwordResetTokenRepo.findByToken(token).getUser());
 	}
 
@@ -123,7 +122,7 @@ public class UserServiceImpl implements UserService {
 	public void changePassword(UserEntity user, String newPassword) {
 		user.setPassword(passwordEncoder.encode(newPassword));
 		userRepo.save(user);
-		
+
 	}
 
 	@Override

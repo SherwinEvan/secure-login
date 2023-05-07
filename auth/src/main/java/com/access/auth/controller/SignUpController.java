@@ -38,7 +38,6 @@ public class SignUpController {
 		return "Hello!";
 	}
 
-	
 	@GetMapping("/test")
 	public String test() {
 		return "Hello! This is a test.";
@@ -47,24 +46,23 @@ public class SignUpController {
 	@PostMapping("/signup")
 	public String registerUser(@RequestBody UserModel userModel, final HttpServletRequest request) {
 		UserEntity user = userService.registerUser(userModel);
-		
-		RegistrationCompleteEvent registrationCompleteEvent = new RegistrationCompleteEvent(user, applicationUrl(request));
+
+		RegistrationCompleteEvent registrationCompleteEvent = new RegistrationCompleteEvent(user,
+				applicationUrl(request));
 
 		publisher.publishEvent(registrationCompleteEvent);
-		
-		String url = registrationCompleteEvent.getApplicationUrl() + "/auth/verifyRegistration?token=" + userService.getTokenByUser(user);
-		
-		if(url == null)
-			return "Error generating activation link.";
-		
-		return url;
+
+		String url = registrationCompleteEvent.getApplicationUrl() + "/auth/verifyRegistration?token="
+				+ userService.getTokenByUser(user);
+
+		return (url == null) ? "Error generating activation link!" : url;
 	}
 
 	@GetMapping("/verifyRegistration")
 	public String verifyRegistration(@RequestParam("token") String token) {
 		boolean validity = userService.validateVerificationToken(token);
 
-		if(validity) {
+		if (validity) {
 			return "User verified successfully!";
 		}
 
@@ -79,43 +77,43 @@ public class SignUpController {
 		resendVerificationToken(user, applicationUrl(request), verificationToken);
 		return "Verification Link Sent";
 	}
-	
+
 	@PostMapping("/resetPassword")
 	public String resetPassword(@RequestBody PasswordModel passwordModel, HttpServletRequest request) {
 		UserEntity user = userService.findUserByEmail(passwordModel.getEmail());
 		String url = "";
-		if(user != null) {
+		if (user != null) {
 			String token = UUID.randomUUID().toString();
 			userService.createPasswordResetTokenForUser(user, token);
 			url = passwordResetTokenMail(user, applicationUrl(request), token);
 		}
-		return url; 
+		return url;
 	}
-	
+
 	@PostMapping("/savePassword")
 	public String savePassword(@RequestBody PasswordModel passwordModel) {
-		
-		if(userService.validatePasswordResetToken(passwordModel.getOldToken())) {
+
+		if (userService.validatePasswordResetToken(passwordModel.getOldToken())) {
 			return "Bad ttttoken";
-			}
+		}
 		Optional<UserEntity> user = userService.getUserByPasswordResetToken(passwordModel.getOldToken());
-		
-		if(user.isPresent()) {
+
+		if (user.isPresent()) {
 			userService.changePassword(user.get(), passwordModel.getNewPassword());
 			return "Password Reset Successfully!";
 		}
-		
+
 		return "Bad token";
 	}
-	
+
 	@PostMapping("/changePassword")
 	public String changePassword(@RequestBody PasswordModel passwordModel) {
 		UserEntity user = userService.findUserByEmail(passwordModel.getEmail());
-		
-		if(!userService.checkIfValidOldPassword(user, passwordModel.getOldPassword())) {
+
+		if (!userService.checkIfValidOldPassword(user, passwordModel.getOldPassword())) {
 			return "Invalid Old Password";
 		}
-		
+
 		userService.changePassword(user, passwordModel.getNewPassword());
 		return "Password Change Successful";
 	}
@@ -124,7 +122,7 @@ public class SignUpController {
 		String url = applicationUrl + "/auth/savePassword?token=" + token;
 
 		log.info("Click the link to reset password : {}", url);
-		
+
 		return url;
 	}
 

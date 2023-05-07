@@ -8,12 +8,9 @@ import com.access.auth.entities.UserEntity;
 import com.access.auth.entities.VerificationToken;
 import com.access.auth.models.UserModel;
 
-import jakarta.servlet.http.HttpServletRequest;
-
-
 @Service
 public interface UserService {
-	
+
 	public UserEntity registerUser(UserModel userModel);
 
 	public void saveVerificationTokenForUser(String token, UserEntity user);
@@ -33,7 +30,6 @@ public interface UserService {
 	public void changePassword(UserEntity user, String newPassword);
 
 	public boolean checkIfValidOldPassword(UserEntity user, String oldPassword);
-	
+
 	public String getTokenByUser(UserEntity User);
 }
-
