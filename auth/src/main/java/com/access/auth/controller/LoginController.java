@@ -2,12 +2,11 @@ package com.access.auth.controller;
 
 import java.security.Principal;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,15 +36,11 @@ public class LoginController {
 
 	private final AuthenticationManager authenticationManager;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
 	public LoginController(TokenService tokenService, AuthenticationManager authenticationManager, UserRepo userRepo,
 			PasswordEncoder passwordEncoder) {
 		this.tokenService = tokenService;
 		this.authenticationManager = authenticationManager;
 		this.userRepo = userRepo;
-		this.passwordEncoder = passwordEncoder;
 	}
 
 	@PostMapping("/")
@@ -58,29 +53,16 @@ public class LoginController {
 
 			Authentication authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(userEntity.getUserName(), userEntity.getPassword()));
-			
+
 			String accessToken = tokenService.generateToken(authentication);
-			
+
 			Cookie cookie = new Cookie("access_token", accessToken);
-		    cookie.setMaxAge(864000); // Set cookie to expire in 1 hour
-		    cookie.setPath("/");
-		    cookie.setHttpOnly(true);
-		    response.addCookie(cookie);
+			cookie.setMaxAge(864000); // Set cookie to expire in 1 Day
+			cookie.setPath("/");
+			cookie.setHttpOnly(true);
+			response.addCookie(cookie);
 
 			return ResponseEntity.ok("Login successful");
-
-			/*
-			 * String enteredPassword = passwordEncoder.encode(loginUser.getPassword());
-			 * log.info(userEntity.getUserName()); log.info(userEntity.getPassword());
-			 * log.info(loginUser.getUserName()); log.info(loginUser.getPassword());
-			 * log.info(enteredPassword);
-			 * 
-			 * try { return tokenService.generateToken(authenticationManager.authenticate(
-			 * new UsernamePasswordAuthenticationToken(userEntity.getUserName(),
-			 * userEntity.getPassword()))); } catch (BadCredentialsException e) { throw new
-			 * Exception("Incorrect username or password", e); } return
-			 * "Invalid Credentials!";
-			 */
 
 		}
 		return ResponseEntity.ok("Invalid Credentials!");
@@ -88,6 +70,18 @@ public class LoginController {
 
 	@GetMapping("/")
 	public String home(Principal principal) {
-		return "Hello " + principal.getName();
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.isAuthenticated()) {
+			// User is authenticated
+			log.info("Authenticated!");
+			String currentUserName = authentication.getName();
+			return "Hello " + currentUserName;
+		} else {
+			// User is not authenticated
+			log.info("Not Authenticated!");
+		}
+
+		return "Not logged in!";
 	}
 }

@@ -11,7 +11,7 @@ public class UserModel {
 	private String userName;
 	private String email;
 	private String password;
-	
+
 	public String getEmail() {
 		return email;
 	}
@@ -41,7 +41,7 @@ public class UserModel {
 	}
 
 	private String matchingPassword;
-	
+
 	public String getUserName() {
 		return userName;
 	}
