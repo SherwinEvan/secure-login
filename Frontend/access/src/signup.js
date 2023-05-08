@@ -12,13 +12,15 @@ import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import * as React from 'react';
 import DeleteSessionCookie from './service/deleteSessionCookie';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Webx 
+        Your Website
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -48,9 +50,33 @@ export default function SignUp() {
     axios.post("auth/signup", signUpData).then(res => {
       if(res.status === 200) {
         console.log(res.data);
-        //window.location = '/login';
+        
+        toast.success(<div>Registation success! <br /> Please login to continue.</div>, {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+        
+        setTimeout(() => window.location = '/login' , 3000)
       }
     }).catch(error => {
+      
+      toast.error(<div>Server error! <br /> Try again later.</div>, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+
       console.log(error.response.data);
     });
   };
@@ -91,7 +117,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="userName"
-                  label="User Name"
+                  label="Username"
                   name="userName"
                   autoComplete="true"
                 />

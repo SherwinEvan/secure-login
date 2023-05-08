@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import DeleteSessionCookie from './service/deleteSessionCookie';
+import loginBG  from './assests/loginBG.jpg';
 
 function Copyright(props) {
   return (
@@ -65,7 +66,7 @@ export default function Login() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random)',
+            backgroundImage: `url(${loginBG})`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
@@ -87,7 +88,7 @@ export default function Login() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Welcome Back!
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
@@ -95,7 +96,7 @@ export default function Login() {
                 required
                 fullWidth
                 id="userName"
-                label="User Name"
+                label="Username"
                 name="userName"
                 autoComplete="userName"
                 autoFocus
