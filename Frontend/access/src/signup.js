@@ -1,15 +1,17 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';  
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import axios from 'axios';
+import * as React from 'react';
+import DeleteSessionCookie from './service/deleteSessionCookie';
 
 function Copyright(props) {
   return (
@@ -27,12 +29,29 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
+  
+  React.useEffect(DeleteSessionCookie);
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+    
+    const signUpData = {
+        userName: data.get('userName'),
+        email: data.get('email'),
+        password: data.get('password')
+    }
+
+    console.log(JSON.stringify(signUpData));
+
+    axios.post("auth/signup", signUpData).then(res => {
+      if(res.status === 200) {
+        console.log(res.data);
+        //window.location = '/login';
+      }
+    }).catch(error => {
+      console.log(error.response.data);
     });
   };
 
