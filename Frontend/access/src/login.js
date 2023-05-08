@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
+import DeleteSessionCookie from './service/deleteSessionCookie';
 
 function Copyright(props) {
   return (
@@ -30,24 +31,29 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Login() {
-  const handleSubmit = (event) => {
+
+  React.useEffect(DeleteSessionCookie);
+
+  function handleSubmit(event) {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
-    var loginData = {
+    const loginData = {
       userName: data.get('userName'),
       password: data.get('password'),
-    }
+    };
 
     console.log(JSON.stringify(loginData));
 
     axios.post("login/", loginData).then(res => {
-      console.log(res.data)
+      if (res.status === 200) {
+        console.log(res.data);
+        window.location = '/';
+      }
     }).catch(error => {
       console.log(error.response.data);
     });
-
-  };
+  }
 
   return (
     <ThemeProvider theme={theme}>
