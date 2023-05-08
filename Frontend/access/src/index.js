@@ -5,12 +5,14 @@ import axios from "axios";
 import SignUp from './signup';
 import Login from './login';
 import HomePage from './home';
+import { ToastContainer } from 'react-toastify';
 
 axios.defaults.baseURL="http://localhost:8080/";
 axios.defaults.withCredentials = true;
 
 export default function RouteApp() {
   return (
+    <>
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -18,6 +20,8 @@ export default function RouteApp() {
         <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
+    <ToastContainer />
+    </>
   );
 }
 
