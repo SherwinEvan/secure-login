@@ -43,7 +43,7 @@ export default function SignUp() {
     formState: { errors },
   } = useForm();
   
-  React.useEffect(DeleteSessionCookie, []);
+  React.useEffect(DeleteSessionCookie);
 
   const onSubmit = (data) => {
 

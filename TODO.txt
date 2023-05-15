@@ -1,6 +1,3 @@
-login form validation and toast
-login invalid username/ password for 401
-fix DeleteJWTCookie in login as once per page load
 improve email validation
 improve password validation message
 add click to view password
