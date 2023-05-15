@@ -1,30 +1,37 @@
-import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import axios from 'axios';
-import DeleteSessionCookie from './service/deleteSessionCookie';
-import loginBG  from './assests/loginBG.jpg';
+import * as React from "react";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Typography from "@mui/material/Typography";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+import DeleteSessionCookie from "./service/deleteSessionCookie";
+import loginBG from "./assests/loginBG.jpg";
 
 function Copyright(props) {
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
       <Link color="inherit" href="https://mui.com/">
         Your Website
-      </Link>{' '}
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
@@ -32,33 +39,58 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Login() {
-
   React.useEffect(DeleteSessionCookie);
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  const { handleSubmit, register } = useForm();
 
-    const data = new FormData(event.currentTarget);
-    const loginData = {
-      userName: data.get('userName'),
-      password: data.get('password'),
-    };
+  const onSubmit = async (data) => {
+    console.log(data);
 
-    console.log(JSON.stringify(loginData));
+    if (
+      !/^[a-zA-Z][a-zA-Z0-9_]{3,15}$/.test(data.userName) ||
+      !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,127}$/.test(
+        data.password
+      )
+    ) {
+      toast.error(<div>Invalid Username/Password!</div>, {
+        position: "top-center",
+        autoClose: 2500,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    } else {
+      try {
+        const response = await axios.post("login/", data);
+        await toast.promise(Promise.resolve(response), {
+          pending: "Logging in...",
+          success: "Login successful!",
+          error: "Invalid Username/Password!",
+          position: "top-center",
+          autoClose: 2750,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
 
-    axios.post("login/", loginData).then(res => {
-      if (res.status === 200) {
-        console.log(res.data);
-        window.location = '/';
+        if (response.status === 200) {
+          setTimeout(() => (window.location = "/"), 3000);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    }).catch(error => {
-      console.log(error.response.data);
-    });
-  }
+    }
+  };
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ height: '100vh' }}>
+      <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
           item
@@ -67,11 +99,13 @@ export default function Login() {
           md={7}
           sx={{
             backgroundImage: `url(${loginBG})`,
-            backgroundRepeat: 'no-repeat',
+            backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
-              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+              t.palette.mode === "light"
+                ? t.palette.grey[50]
+                : t.palette.grey[900],
+            backgroundSize: "cover",
+            backgroundPosition: "center",
           }}
         />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -79,18 +113,23 @@ export default function Login() {
             sx={{
               my: 8,
               mx: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
               Welcome Back!
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSubmit(onSubmit)}
+              sx={{ mt: 1 }}
+            >
               <TextField
                 margin="normal"
                 required
@@ -99,6 +138,7 @@ export default function Login() {
                 label="Username"
                 name="userName"
                 autoComplete="userName"
+                {...register("userName")}
                 autoFocus
               />
               <TextField
@@ -110,6 +150,7 @@ export default function Login() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                {...register("password")}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}

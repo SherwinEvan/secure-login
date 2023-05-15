@@ -1,0 +1,5 @@
+improve email validation
+improve password validation message
+add click to view password
+add reenter password in signup
+add check if username already in use functionality
