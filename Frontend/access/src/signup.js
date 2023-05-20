@@ -15,6 +15,7 @@ import DeleteSessionCookie from "./service/deleteSessionCookie";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useForm, Controller } from "react-hook-form";
+import NavBar from "./components/navbar";
 
 function Copyright(props) {
   return (
@@ -79,7 +80,7 @@ export default function SignUp() {
           </div>,
           {
             position: "top-center",
-            autoClose: 5000,
+            autoClose: 4,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -92,6 +93,8 @@ export default function SignUp() {
   };
 
   return (
+    <>
+    <NavBar />
     <div className="outerbox">
       <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
@@ -238,5 +241,6 @@ export default function SignUp() {
         </Container>
       </ThemeProvider>
     </div>
+    </>
   );
 }

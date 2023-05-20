@@ -74,7 +74,7 @@ public class LoginController {
 			// User is authenticated
 			log.info("Authenticated!");
 			String currentUserName = authentication.getName();
-			return "Hello " + currentUserName;
+			return currentUserName;
 		} else {
 			// User is not authenticated
 			log.info("Not Authenticated!");
