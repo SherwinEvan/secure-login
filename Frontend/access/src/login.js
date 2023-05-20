@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import DeleteSessionCookie from "./service/deleteSessionCookie";
 import loginBG from "./assests/loginBG.jpg";
+import NavBar from "./components/navbar";
 
 function Copyright(props) {
   return (
@@ -89,6 +90,8 @@ export default function Login() {
   };
 
   return (
+    <>
+    <NavBar />
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
@@ -101,9 +104,9 @@ export default function Login() {
             backgroundImage: `url(${loginBG})`,
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
+            t.palette.mode === "light"
+            ? t.palette.grey[50]
+            : t.palette.grey[900],
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -182,5 +185,6 @@ export default function Login() {
         </Grid>
       </Grid>
     </ThemeProvider>
+    </>
   );
 }
