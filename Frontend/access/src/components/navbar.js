@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
+import { navLinks } from "../data/navlinks";
 import GetUser from "../service/getUser";
-import pdfIcon from "../assests/pdficon.png";
+import { mainIcon } from "../data/logo";
 import BurgerMenu from "../assests/BurgerMenu.png";
 import BurgerMenuClose from "../assests/BurgerMenuClose.png";
 import DeleteSessionCookie from "../service/deleteSessionCookie";
@@ -13,14 +14,6 @@ function handleLogout() {
 }
 
 export default function NavBar() {
-  const navLinks = [
-    { name: "Read", link: "/" },
-    { name: "Compress", link: "/" },
-    { name: "Merge", link: "/" },
-    { name: "Convert", link: "/" },
-    { name: "Sign", link: "/" },
-  ];
-
   const [currUser, setCurrUser] = useState(null);
   const [burgerOpen, setBurgerOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,10 +32,16 @@ export default function NavBar() {
     <nav className="shadow-md w-full relative">
       <div className="flex items-center justify-between bg-white py-4 px-10">
         <div className="flex items-center">
-          <Link to="/" className="flex cursor-pointer items-center">
-            <img src={pdfIcon} alt="pdfIcon" className="w-[40px] h-[38px]" />
-            <span className="ml-2 text-xl font-bold">ClonePDF</span>
-          </Link>
+          {mainIcon.map((main) => (
+            <Link to={main.link} className="flex cursor-pointer items-center">
+              <img
+                src={main.icon}
+                alt={main.alt}
+                className="w-[40px] h-[38px]"
+              />
+              <span className="ml-2 text-xl font-bold">{main.name}</span>
+            </Link>
+          ))}
         </div>
 
         <div
@@ -104,7 +103,7 @@ export default function NavBar() {
               </div>
             </li>
           ) : (
-            <li className="md:hidden">Loading...</li>
+            <li className="md:hidden">Syncing...</li>
           )}
         </ul>
         {!isLoading ? (
@@ -130,7 +129,7 @@ export default function NavBar() {
             )}
           </div>
         ) : (
-          <div className="hidden md:block">Loading...</div>
+          <div className="hidden md:block">Syncing...</div>
         )}
       </div>
     </nav>

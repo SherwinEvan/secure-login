@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import NavBar from "./components/navbar";
 import "./index.css";
+import Footer from "./components/footer";
 
 export default function HomePage() {
   const [currUser, setCurrUser] = useState("guest");
@@ -19,6 +20,7 @@ export default function HomePage() {
         <>
         <NavBar />
         {currUser}
+        <Footer />
         </>
       );
       
