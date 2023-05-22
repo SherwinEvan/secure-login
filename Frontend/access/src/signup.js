@@ -16,24 +16,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useForm, Controller } from "react-hook-form";
 import NavBar from "./components/navbar";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import Footer from "./components/footer";
 
 const theme = createTheme();
 
@@ -43,12 +26,11 @@ export default function SignUp() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  
+
   React.useEffect(DeleteSessionCookie);
 
   const onSubmit = (data) => {
-
-    console.log(data)
+    console.log(data);
 
     axios
       .post("auth/signup", data)
@@ -94,153 +76,154 @@ export default function SignUp() {
 
   return (
     <>
-    <NavBar />
-    <div className="outerbox">
-      <ThemeProvider theme={theme}>
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <Box
-            className="innerBox"
-            sx={{
-              marginTop: 8,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign up
-            </Typography>
+      <NavBar />
+      <div className="outerbox">
+        <ThemeProvider theme={theme}>
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
             <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit(onSubmit)}
-              sx={{ mt: 3 }}
+              className="innerBox"
+              sx={{
+                marginTop: 8,
+                marginBottom: 8,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
             >
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Controller
-                    name="email"
-                    control={control}
-                    rules={{
-                      required: "Email is required.",
-                      pattern: {
-                        value: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
-                        message: "Enter a valid email address.",
-                      },
-                    }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        required
-                        fullWidth
-                        autoComplete="email"
-                        name="email"
-                        id="email"
-                        label="Email Address"
-                        error={!!errors.email}
-                        helperText={errors.email?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Controller
-                    name="userName"
-                    control={control}
-                    rules={{
-                      required: "Username is required.",
-                      pattern: {
-                        value: /^[a-zA-Z][a-zA-Z0-9_]{3,15}$/,
-                        message:
-                          "Enter a valid Username (Alphanumeric and _ character(s) are allowed).",
-                      },
-                      minLength: {
-                        value: 4,
-                        message: "Username must be at least 4 characters.",
-                      },
-                      maxLength: {
-                        value: 16,
-                        message: "Username can be at atmost 16 characters.",
-                      },
-                    }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        required
-                        fullWidth
-                        autoComplete="given-name"
-                        name="userName"
-                        id="userName"
-                        label="Userame"
-                        error={!!errors.userName}
-                        helperText={errors.userName?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Controller
-                    name="password"
-                    control={control}
-                    rules={{
-                      required: "Password is required.",
-                      pattern: {
-                        value:
-                          /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,127}$/,
-                        message:
-                          "Enter a valid password (One UPPERCASE, lowercase and special characters '@$!%*#?&' required.",
-                      },
-                      minLength: {
-                        value: 4,
-                        message: "Password must be at least 8 characters.",
-                      },
-                      maxLength: {
-                        value: 128,
-                        message: "Password can be at atmost 128 characters.",
-                      },
-                    }}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="new-password"
-                        error={!!errors.password}
-                        helperText={errors.password?.message}
-                      />
-                    )}
-                  />
-                </Grid>
-              </Grid>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+              <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Sign up
+              </Typography>
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleSubmit(onSubmit)}
+                sx={{ mt: 3 }}
               >
-                Sign Up
-              </Button>
-              <Grid container justifyContent="flex-end">
-                <Grid item>
-                  <Link href="/Login" variant="body2">
-                    Already have an account? Sign in
-                  </Link>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="email"
+                      control={control}
+                      rules={{
+                        required: "Email is required.",
+                        pattern: {
+                          value: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
+                          message: "Enter a valid email address.",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          required
+                          fullWidth
+                          autoComplete="email"
+                          name="email"
+                          id="email"
+                          label="Email Address"
+                          error={!!errors.email}
+                          helperText={errors.email?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="userName"
+                      control={control}
+                      rules={{
+                        required: "Username is required.",
+                        pattern: {
+                          value: /^[a-zA-Z][a-zA-Z0-9_]{3,15}$/,
+                          message:
+                            "Enter a valid Username (Alphanumeric and _ character(s) are allowed).",
+                        },
+                        minLength: {
+                          value: 4,
+                          message: "Username must be at least 4 characters.",
+                        },
+                        maxLength: {
+                          value: 16,
+                          message: "Username can be at atmost 16 characters.",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          required
+                          fullWidth
+                          autoComplete="given-name"
+                          name="userName"
+                          id="userName"
+                          label="Userame"
+                          error={!!errors.userName}
+                          helperText={errors.userName?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="password"
+                      control={control}
+                      rules={{
+                        required: "Password is required.",
+                        pattern: {
+                          value:
+                            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,127}$/,
+                          message:
+                            "Enter a valid password (One UPPERCASE, lowercase and special characters '@$!%*#?&' required.",
+                        },
+                        minLength: {
+                          value: 4,
+                          message: "Password must be at least 8 characters.",
+                        },
+                        maxLength: {
+                          value: 128,
+                          message: "Password can be at atmost 128 characters.",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          required
+                          fullWidth
+                          name="password"
+                          label="Password"
+                          type="password"
+                          id="password"
+                          autoComplete="new-password"
+                          error={!!errors.password}
+                          helperText={errors.password?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Sign Up
+                </Button>
+                <Grid container justifyContent="flex-end">
+                  <Grid item>
+                    <Link href="/Login" variant="body2">
+                      Already have an account? Sign in
+                    </Link>
+                  </Grid>
+                </Grid>
+              </Box>
             </Box>
-          </Box>
-          <Copyright sx={{ mt: 5 }} />
-        </Container>
-      </ThemeProvider>
-    </div>
+          </Container>
+        </ThemeProvider>
+      </div>
+      <Footer />
     </>
   );
 }

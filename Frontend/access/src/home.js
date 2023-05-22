@@ -5,7 +5,8 @@ import "./index.css";
 import Footer from "./components/footer";
 
 export default function HomePage() {
-  const [currUser, setCurrUser] = useState("guest");
+  const [currUser, setCurrUser] = useState("Guest");
+
   axios
     .get("login/")
     .then((res) => {
@@ -16,12 +17,11 @@ export default function HomePage() {
       console.log(error.data);
     });
 
-    return (
-        <>
-        <NavBar />
-        {currUser}
-        <Footer />
-        </>
-      );
-      
+  return (
+    <div class="flex flex-col h-screen justify-between">
+      <NavBar />
+      <div className="mb-auto">{currUser}</div>
+      <Footer />
+    </div>
+  );
 }

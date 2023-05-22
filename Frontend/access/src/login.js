@@ -18,24 +18,7 @@ import { useForm } from "react-hook-form";
 import DeleteSessionCookie from "./service/deleteSessionCookie";
 import loginBG from "./assests/loginBG.jpg";
 import NavBar from "./components/navbar";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import Footer from "./components/footer";
 
 const theme = createTheme();
 
@@ -93,7 +76,7 @@ export default function Login() {
     <>
     <NavBar />
     <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
+      <Grid container component="main" sx={{ height: "100%" }}>
         <CssBaseline />
         <Grid
           item
@@ -111,7 +94,7 @@ export default function Login() {
             backgroundPosition: "center",
           }}
         />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={0} square>
           <Box
             sx={{
               my: 8,
@@ -121,7 +104,7 @@ export default function Login() {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
@@ -179,12 +162,12 @@ export default function Login() {
                   </Link>
                 </Grid>
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
         </Grid>
       </Grid>
     </ThemeProvider>
+    <Footer />
     </>
   );
 }

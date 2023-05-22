@@ -7,29 +7,30 @@ import { navLinks } from "../data/navlinks";
 export default function Footer() {
   return (
     <footer className="shadow-inner">
-      <div className="flex justify-between items-center px-10">
-        <div className="flex-col items-center">
-        {mainIcon.map((main) => (
+
+      <div className="md:flex md:justify-between items-center md:px-10 px-4 md:pt-0 pt-8">
+        <div className="flex-col items-center md:mx-8 md:mb-0 mb-10">
+          {mainIcon.map((main) => (
             <Link to={main.link} className="flex cursor-pointer items-center">
               <img
                 src={main.icon}
                 alt={main.alt}
-                className="w-[40px] h-[38px]"
+                className="w-[38px] h-[36px] md:w-[40px] md:h-[38px]"
               />
-              <span className="ml-2 text-xl font-bold">{main.name}</span>
+              <span className="ml-2 text-lg md:text-xl font-bold">{main.name}</span>
             </Link>
           ))}
-          <div className="mr-7 mt-5">PDF made easy</div>
+          <div className="pl-[2px] mt-4 md:mt-5">PDF made easy.</div>
         </div>
 
-        <div className="flex">
-          <ul className="md:mx-8 my-8">
+        <div className="md:flex flex-col md:mb-0 mb-5">
+          <ul className="md:mx-8 my-6">
             <span className="font-semibold">Solutions</span>
             {navLinks.map((link) => (
-              <li key={link.name} className="md:my-4 my-8">
+              <li key={link.name} className="md:mb-0 my-6">
                 <Link
                   to={link.link}
-                  className="md:text-gray-800 text-neutral-200 hover:text-gray-400 duration-500"
+                  className="md:text-black hover:text-gray-400 duration-500"
                 >
                   {link.name}
                 </Link>
@@ -39,31 +40,52 @@ export default function Footer() {
         </div>
 
         <div className="flex">
-          <ul className="md:mx-8 my-8 ml-4">
+          <ul className="md:mx-8 my-6">
             <span className="font-semibold">Support</span>
-            <li className="md:my-4 my-8">
+            <li className="md:mb-2 my-6">
               <Link
                 to="/"
-                className="md:text-gray-800 text-neutral-200 hover:text-gray-400 duration-500"
+                className="md:text-black hover:text-gray-400 duration-500"
               >
                 About us
               </Link>
             </li>
             <div className="flex">
-            {socialsIcon.map((icons) => (
-              <li key={icons.name} className="mr-10 my-10">
-                <Link to={icons.link}>
-                  <img
-                    src={icons.icon}
-                    alt={icons.alt}
-                    className="h-[30px] w-[30px]"
-                  />
-                </Link>
-              </li>
-            ))}
+              {socialsIcon.map((icons) => (
+                <li key={icons.name} className="mr-10 my-10">
+                  <Link to={icons.link}>
+                    <img
+                      src={icons.icon}
+                      alt={icons.alt}
+                      className="h-[30px] w-[30px]"
+                    />
+                  </Link>
+                </li>
+              ))}
             </div>
           </ul>
         </div>
+      </div>
+
+      <div className="flex py-5 px-10 text-xs justify-around shadow-inner">
+        {mainIcon.map((main) => (
+          <Link
+            to={main.link}
+            className="cursor-pointer items-center hover:underline"
+          >
+            <span className="">
+              {"© " +
+                main.name +
+                " " +
+                new Date().getFullYear() +
+                " - MIT License"}
+            </span>
+          </Link>
+        ))}
+
+        <Link to="/" className="cursor-pointer items-center hover:underline">
+          <span className="">{"Terms - Privacy Policy"}</span>
+        </Link>
       </div>
     </footer>
   );
