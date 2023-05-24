@@ -59,7 +59,7 @@ export default function Login() {
       try {
         const response = await axios.post("login/", data);
         await toast.promise(Promise.resolve(response), {
-          pending: "Logging in...",
+          pending: "Authenticating...",
           success: "Login successful!",
           error: "Invalid Username/Password!",
           position: "top-center",
@@ -77,6 +77,21 @@ export default function Login() {
         }
       } catch (error) {
         console.log(error);
+        toast.error(
+          <div>
+            Server error! <br /> Please try again later.
+          </div>,
+          {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          }
+        );
       }
     }
   };
