@@ -28,6 +28,7 @@ export default function SignUp() {
     control,
     handleSubmit,
     formState: { errors },
+    getValues,
   } = useForm();
 
   React.useEffect(DeleteSessionCookie);
@@ -242,7 +243,37 @@ export default function SignUp() {
                       )}
                     />
                   </Grid>
+                  <Grid item xs={12}>
+                    <Controller
+                      name="confirmPassword"
+                      control={control}
+                      rules={{
+                        required: "Confirm Password is required.",
+                        validate: {
+                          matchesPassword: (value) =>
+                            value === getValues().password ||
+                            "Passwords do not match.",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          margin="normal"
+                          required
+                          fullWidth
+                          name="confirmPassword"
+                          label="Confirm Password"
+                          id="confirmPassword"
+                          autoComplete="new-password"
+                          type="password"
+                          error={!!errors.confirmPassword}
+                          helperText={errors.confirmPassword?.message}
+                        />
+                      )}
+                    />
+                  </Grid>
                 </Grid>
+
                 <Button
                   type="submit"
                   fullWidth

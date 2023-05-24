@@ -1,5 +1,4 @@
 improve email validation
-add reenter password in signup
 add check if username already in use functionality
 
 fix hamburger menu close icon being darkned
