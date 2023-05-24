@@ -146,7 +146,9 @@ export default function SignUp() {
                       rules={{
                         required: "Email is required.",
                         pattern: {
-                          value: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
+                          value:
+                            //RFC2822 Email  regex
+                            /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
                           message: "Enter a valid email address.",
                         },
                       }}
