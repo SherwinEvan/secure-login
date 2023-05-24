@@ -41,7 +41,7 @@ export default function Login() {
 
     if (
       !/^[a-zA-Z][a-zA-Z0-9_]{3,15}$/.test(data.userName) ||
-      !/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,127}$/.test(
+      !/^(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])(?=.*\d).{8,127}$/.test(
         data.password
       )
     ) {

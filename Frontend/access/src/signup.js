@@ -9,6 +9,9 @@ import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { IconButton } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
 import * as React from "react";
 import DeleteSessionCookie from "./service/deleteSessionCookie";
@@ -28,6 +31,37 @@ export default function SignUp() {
   } = useForm();
 
   React.useEffect(DeleteSessionCookie);
+
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleTogglePassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const validatePassword = (value) => {
+    const uppercaseRegex = /[A-Z]/;
+    const lowercaseRegex = /[a-z]/;
+    const specialCharactersRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/;
+    const digitRegex = /\d/;
+
+    if (!uppercaseRegex.test(value)) {
+      return "At least one uppercase character is required.";
+    }
+
+    if (!specialCharactersRegex.test(value)) {
+      return "At least one special character is required.";
+    }
+
+    if (!lowercaseRegex.test(value)) {
+      return "At least one lowercase character is required.";
+    }
+
+    if (!digitRegex.test(value)) {
+      return "At least one digit is required.";
+    }
+
+    return true;
+  };
 
   const onSubmit = (data) => {
     console.log(data);
@@ -58,11 +92,11 @@ export default function SignUp() {
       .catch((error) => {
         toast.error(
           <div>
-            Server error! <br /> Try again later.
+            Server error! <br /> Please try again later.
           </div>,
           {
             position: "top-center",
-            autoClose: 4,
+            autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -171,33 +205,39 @@ export default function SignUp() {
                       control={control}
                       rules={{
                         required: "Password is required.",
-                        pattern: {
-                          value:
-                            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,127}$/,
-                          message:
-                            "Enter a valid password (One UPPERCASE, lowercase and special characters '@$!%*#?&' required.",
-                        },
                         minLength: {
-                          value: 4,
+                          value: 8,
                           message: "Password must be at least 8 characters.",
                         },
-                        maxLength: {
-                          value: 128,
-                          message: "Password can be at atmost 128 characters.",
-                        },
+                        validate: validatePassword,
                       }}
                       render={({ field }) => (
                         <TextField
                           {...field}
+                          margin="normal"
                           required
                           fullWidth
                           name="password"
                           label="Password"
-                          type="password"
                           id="password"
                           autoComplete="new-password"
+                          type={showPassword ? "text" : "password"}
                           error={!!errors.password}
                           helperText={errors.password?.message}
+                          InputProps={{
+                            endAdornment: (
+                              <IconButton
+                                onClick={handleTogglePassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOffIcon />
+                                ) : (
+                                  <VisibilityIcon />
+                                )}
+                              </IconButton>
+                            ),
+                          }}
                         />
                       )}
                     />
