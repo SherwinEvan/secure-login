@@ -13,8 +13,8 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { IconButton } from "@mui/material";
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
@@ -22,6 +22,7 @@ import DeleteSessionCookie from "./service/deleteSessionCookie";
 import loginBG from "./assests/loginBG.jpg";
 import NavBar from "./components/navbar";
 import Footer from "./components/footer";
+import { saveRememberMePreference } from "./service/rememberMe.js";
 
 const theme = createTheme();
 
@@ -73,6 +74,7 @@ export default function Login() {
         });
 
         if (response.status === 200) {
+          saveRememberMePreference(data.remember);
           setTimeout(() => (window.location = "/"), 3000);
         }
       } catch (error) {
@@ -183,7 +185,13 @@ export default function Login() {
                 />
 
                 <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
+                  control={
+                    <Checkbox
+                      {...register("remember")}
+                      color="primary"
+                      defaultChecked={true}
+                    />
+                  }
                   label="Remember me"
                 />
                 <Button

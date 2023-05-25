@@ -1,3 +1,5 @@
 add check if username already in use functionality
+add email or username for login functionality
+fix password input
 
 fix hamburger menu close icon being darkned
