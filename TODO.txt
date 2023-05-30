@@ -1,5 +1,9 @@
 add check if username already in use functionality
 add email or username for login functionality
 fix password input
+add delete account functionality
+
 
 fix hamburger menu close icon being darkned
+
+add create pdf option
