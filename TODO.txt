@@ -2,6 +2,7 @@ add check if username already in use functionality
 add email or username for login functionality
 fix password input
 add delete account functionality
+work on read_pdf
 
 
 fix hamburger menu close icon being darkned
