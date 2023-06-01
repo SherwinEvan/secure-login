@@ -8,12 +8,11 @@ import NavBar from "./components/navbar";
 import Footer from "./components/footer";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import { MuiFileInput } from "mui-file-input";
-import { Viewer } from '@react-pdf-viewer/core';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-
+import { Viewer } from "@react-pdf-viewer/core";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+import "@react-pdf-viewer/core/lib/styles/index.css";
 
 export default function ReadPDF() {
   useRememberMe();
@@ -131,13 +130,9 @@ export default function ReadPDF() {
           <LinearProgress variant="determinate" value={uploadProgress} />
         )}
         {pdfUrl && (
-              <div style={{ height: '100vh' }}>
-              <Viewer
-                fileUrl={pdfUrl}
-                plugins={[defaultLayoutPluginInstance]}
-              />
-            </div>
-        
+          <div style={{ height: "100vh" }}>
+            <Viewer fileUrl={pdfUrl} plugins={[defaultLayoutPluginInstance]} />
+          </div>
         )}
       </div>
       <Footer />
