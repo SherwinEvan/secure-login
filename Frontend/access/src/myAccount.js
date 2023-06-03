@@ -43,12 +43,14 @@ export default function MyAccount() {
   return (
     <div className="flex flex-col h-screen justify-between">
       <NavBar />
-      <div className="flex-col mt-10 mx-10 pt-4 shadow">
-        <span className="flex text-3xl font-bold justify-center">Manage you account</span>
-        <div className="flex justify-center mb-auto">
-          <div className="p-10 m-10 shadow items-center font-semibold text-lg">
+      <span className="flex text-2xl pt-5 md:pt-8 md:text-3xl font-bold justify-center">
+        Manage your account
+      </span>
+      <div className="flex-col mt-4 mb-8 mx-5 shadow">
+        <div className="flex flex-col md:flex-row justify-center mb-auto">
+          <div className="p-6 md:m-10 shadow items-center font-semibold text-lg md:p-10 md:text-lg w-full md:w-auto">
             <div className="flex mb-5 justify-center">Your Account</div>
-            <div className="flex mb-5 justify-center">
+            <div className="mb-3">
               <TextField
                 disabled
                 id="outlined-disabled"
@@ -57,56 +59,49 @@ export default function MyAccount() {
                 value={currUser}
               />
             </div>
-            <div className="flex mb-5 justify-center">
-              <div
-                style={{ display: "flex", maxWidth: "300px", width: "100%" }}
-              >
-                <TextField
-                  disabled
-                  id="outlined-disabled"
-                  label="Email"
-                  value={email}
-                />
-              </div>
+            <div className="mb-3">
+              <TextField
+                disabled
+                id="outlined-disabled"
+                label="Email"
+                fullWidth
+                value={email}
+              />
             </div>
           </div>
-          <div>
-            <div className="p-10 m-10 shadow items-center font-semibold text-lg">
-              <div className="flex mb-5 justify-center">
-                Change your password
-              </div>
-              <div className="flex mb-5 justify-center">
-                <TextField
-                  id="outlined"
-                  type="password"
-                  label="Old Password"
-                  fullWidth
-                  placeholder="Enter your old password"
-                />
-              </div>
-              <div className="flex mb-5 justify-center">
-                <TextField
-                  id="outlined"
-                  type="password"
-                  label="New Password"
-                  fullWidth
-                  placeholder="Enter a new password"
-                />
-              </div>
-              <Button
-                type="submit"
+          <div className="p-6 md:m-10 shadow items-center font-semibold text-lg md:p-10 md:text-lg w-full md:w-auto">
+            <div className="flex mb-5 justify-center">Change your password</div>
+            <div className="mb-3">
+              <TextField
+                id="outlined"
+                type="password"
+                label="Old Password"
                 fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Reset Password
-              </Button>
+                placeholder="Enter your old password"
+              />
             </div>
+            <div className="mb-3">
+              <TextField
+                id="outlined"
+                type="password"
+                label="New Password"
+                fullWidth
+                placeholder="Enter a new password"
+              />
+            </div>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Reset Password
+            </Button>
           </div>
         </div>
-        <div className="p-10 shadow items-center font-semibold text-lg">
-          <div className="flex mb-5 justify-center">
-            <Button variant="outlined" size='large' color="error">
+        <div className="p-5 shadow items-center font-semibold text-base md:text-lg">
+          <div className="flex mb-3 justify-center">
+            <Button variant="outlined" size="large" color="error">
               Delete your account
             </Button>
           </div>
