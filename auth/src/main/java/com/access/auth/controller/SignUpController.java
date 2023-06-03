@@ -111,11 +111,11 @@ public class SignUpController {
 		UserEntity user = userService.findUserByEmail(passwordModel.getEmail());
 
 		if (!userService.checkIfValidOldPassword(user, passwordModel.getOldPassword())) {
-			return "Invalid Old Password";
+			return "Invalid current password";
 		}
 
 		userService.changePassword(user, passwordModel.getNewPassword());
-		return "Password Change Successful";
+		return "Password reset successful!	";
 	}
 
 	private String passwordResetTokenMail(UserEntity user, String applicationUrl, String token) {

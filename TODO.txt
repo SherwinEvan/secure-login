@@ -1,7 +1,12 @@
 add check if username already in use functionality
-add email or username for login functionality
-fix password input
+fix password input on login
+
+fix account p/age and login toastify bug
+fix account page useEffect running twice
 add delete account functionality
+add login again on 401
+add forgot password
+
 work on read_pdf
 
 
