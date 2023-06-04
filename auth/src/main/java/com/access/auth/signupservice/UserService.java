@@ -19,7 +19,7 @@ public interface UserService {
 
 	public VerificationToken generateNewVerificationToken(String oldToken);
 
-	public UserEntity findUserByEmail(String email);
+	public UserEntity findByUserName(String email);
 
 	public void createPasswordResetTokenForUser(UserEntity user, String token);
 
@@ -32,4 +32,6 @@ public interface UserService {
 	public boolean checkIfValidOldPassword(UserEntity user, String oldPassword);
 
 	public String getTokenByUser(UserEntity User);
+
+	public boolean deleteUserByUsername(String username);
 }

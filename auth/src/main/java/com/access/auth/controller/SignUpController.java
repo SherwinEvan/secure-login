@@ -80,7 +80,7 @@ public class SignUpController {
 
 	@PostMapping("/resetPassword")
 	public String resetPassword(@RequestBody PasswordModel passwordModel, HttpServletRequest request) {
-		UserEntity user = userService.findUserByEmail(passwordModel.getEmail());
+		UserEntity user = userService.findByUserName(passwordModel.getUserName());
 		String url = "";
 		if (user != null) {
 			String token = UUID.randomUUID().toString();
@@ -108,7 +108,7 @@ public class SignUpController {
 
 	@PostMapping("/changePassword")
 	public String changePassword(@RequestBody PasswordModel passwordModel) {
-		UserEntity user = userService.findUserByEmail(passwordModel.getEmail());
+		UserEntity user = userService.findByUserName(passwordModel.getUserName());
 
 		if (!userService.checkIfValidOldPassword(user, passwordModel.getOldPassword())) {
 			return "Invalid current password";

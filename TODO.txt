@@ -1,9 +1,8 @@
 add check if username already in use functionality
 fix password input on login
 
-fix account p/age and login toastify bug
+fix account page and login toastify bug (promise bug, invalid username bug)
 fix account page useEffect running twice
-add delete account functionality
 add login again on 401
 add forgot password
 

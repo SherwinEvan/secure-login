@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { TextField, Button } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { toast } from "react-toastify";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useForm, Controller } from "react-hook-form";
@@ -9,23 +12,48 @@ import NavBar from "./components/navbar";
 import Footer from "./components/footer";
 import useRememberMe from "./service/rememberMe";
 import GetUser from "./service/getUser";
+import DeleteSessionCookie from "./service/deleteSessionCookie";
 import axios from "axios";
 
 export default function MyAccount() {
   useRememberMe();
 
   const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    getValues,
-    reset
+    handleSubmit: handleResetPasswordSubmit,
+    formState: { errors: resetPasswordErrors },
+    getValues: getResetPasswordValues,
+    reset: resetResetPasswordForm,
+    control: resetPasswordControl,
+  } = useForm();
+  
+
+  const {
+    handleSubmit: handleDeleteAccountSubmit,
+    formState: { errors: deleteAccountErrors },
+    reset: resetDeleteAccountForm,
+    control: deleteAccountControl,
   } = useForm();
 
   const [currUser, setCurrUser] = useState("Guest");
   const [email, setEmail] = useState("NoEmail");
   const [showCurrPassword, setShowCurrPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleModalOpen = () => setModalOpen(true);
+  const handleModalClose = () => setModalOpen(false);
+
+  const modalStyle = {
+    position: "absolute",
+    top: "40%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
 
   useEffect(() => {
     async function checkUserStatus() {
@@ -43,7 +71,7 @@ export default function MyAccount() {
           progress: undefined,
           theme: "light",
         });
-        //setTimeout(() => (window.location = "/login"), 2250);
+        setTimeout(() => (window.location = "/login"), 2250);
       }
     }
     checkUserStatus();
@@ -84,14 +112,14 @@ export default function MyAccount() {
       return "At least one digit is required.";
     }
 
-    if(getValues("currentPassword") === value) {
+    if (getResetPasswordValues("currentPassword") === value) {
       return "New password must be different.";
     }
 
     return true;
   };
 
-  const onSubmit = async (data) => {
+  const onResetPasswordSubmit = async (data) => {
     console.log(data);
 
     if (
@@ -112,18 +140,21 @@ export default function MyAccount() {
     } else {
       try {
         const formData = {
-          email: email,
-          oldPassword: getValues("currentPassword"),
-          newPassword: getValues("newPassword"),
+          userName: currUser,
+          oldPassword: getResetPasswordValues("currentPassword"),
+          newPassword: getResetPasswordValues("newPassword"),
         };
 
         console.log(formData);
 
-        const response = await axios.post("/auth/changePassword", formData);
-        await toast.promise(Promise.resolve(response), {
+        const changePasswordResponse = await axios.post(
+          "/auth/changePassword",
+          formData
+        );
+        await toast.promise(Promise.resolve(changePasswordResponse), {
           pending: "Authenticating...",
-          success: response.data,
-          error: response.data,
+          success: changePasswordResponse.data,
+          error: changePasswordResponse.data,
           position: "top-center",
           autoClose: 2750,
           hideProgressBar: false,
@@ -148,16 +179,73 @@ export default function MyAccount() {
             draggable: true,
             progress: undefined,
             theme: "light",
-          } 
+          }
         );
       } finally {
-        reset({
+        resetResetPasswordForm({
           currentPassword: "",
-          newPassword: ""
+          newPassword: "",
         });
       }
     }
   };
+
+  const validateUsername = (value) => {
+    if (value === currUser) return true;
+    return "Incorrect username.";
+  };
+
+  const onDeleteAccountSubmit = async (data) => {
+  if (data.deleteUsername !== currUser) {
+    return;
+  }
+  try {
+    const deleteData = {
+      userName: currUser
+    };
+
+    console.log(deleteData)
+
+    const deleteUserResponse = await axios.delete("/logout/delete", { data: deleteData });
+    await toast.promise(Promise.resolve(deleteUserResponse), {
+      pending: "Authenticating...",
+      success: deleteUserResponse.data,
+      error: deleteUserResponse.data,
+      position: "top-center",
+      autoClose: 2750,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+
+    DeleteSessionCookie();
+    setTimeout(() => (window.location = "/"), 2250);
+  } catch (error) {
+    console.log(error);
+    toast.error(
+      <div>
+        Server error! <br /> Please try again later.
+      </div>,
+      {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      }
+    );
+  } finally {
+    resetDeleteAccountForm();
+    handleModalClose();
+  }
+};
+
 
   return (
     <div className="flex flex-col h-screen justify-between">
@@ -190,11 +278,11 @@ export default function MyAccount() {
           </div>
           <div className="p-6 md:m-10 shadow items-center font-semibold text-lg md:p-10 md:text-lg w-full md:w-auto">
             <div className="flex mb-5 justify-center">Change your password</div>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleResetPasswordSubmit(onResetPasswordSubmit)}>
               <div className="mb-3">
                 <Controller
                   name="currentPassword"
-                  control={control}
+                  control={resetPasswordControl}
                   rules={{
                     required: "Password is required.",
                   }}
@@ -207,8 +295,8 @@ export default function MyAccount() {
                       id="currentPassword"
                       autoComplete="new-password"
                       type={showCurrPassword ? "text" : "password"}
-                      error={!!errors.currentPassword}
-                      helperText={errors.currentPassword?.message}
+                      error={!!resetPasswordErrors.currentPassword}
+                      helperText={resetPasswordErrors.currentPassword?.message}
                       InputProps={{
                         endAdornment: (
                           <IconButton
@@ -230,7 +318,7 @@ export default function MyAccount() {
               <div className="mb-3">
                 <Controller
                   name="newPassword"
-                  control={control}
+                  control={resetPasswordControl}
                   rules={{
                     required: "Enter a new password.",
                     minLength: {
@@ -248,8 +336,8 @@ export default function MyAccount() {
                       id="newPassword"
                       autoComplete="new-password"
                       type={showNewPassword ? "text" : "password"}
-                      error={!!errors.newPassword}
-                      helperText={errors.newPassword?.message}
+                      error={!!resetPasswordErrors.newPassword}
+                      helperText={resetPasswordErrors.newPassword?.message}
                       InputProps={{
                         endAdornment: (
                           <IconButton
@@ -279,11 +367,66 @@ export default function MyAccount() {
             </form>
           </div>
         </div>
+
         <div className="p-5 shadow items-center font-semibold text-base md:text-lg">
           <div className="flex mb-3 justify-center">
-            <Button variant="outlined" size="large" color="error">
+            <Button
+              variant="outlined"
+              size="large"
+              color="error"
+              onClick={handleModalOpen}
+            >
               Delete your account
             </Button>
+            <Modal
+              open={modalOpen}
+              onClose={handleModalClose}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={modalStyle}>
+                <Typography id="modal-modal-title" variant="h6" component="h2">
+                  Are you sure you want to delete your account?
+                </Typography>
+                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                  <div className="italic">This action cannot be undone!</div>
+                </Typography>
+                <form onSubmit={handleDeleteAccountSubmit(onDeleteAccountSubmit)}>
+                  <div className="mt-5">
+                    <Controller
+                      name="deleteUsername"
+                      control={deleteAccountControl}
+                      rules={{
+                        required: "Enter your username.",
+                        validate: validateUsername,
+                      }}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          fullWidth
+                          name="deleteUsername"
+                          label="Username"
+                          id="deleteUsername"
+                          autoComplete="disabled"
+                          type="text"
+                          placeholder="Enter your username to delete your account"
+                          variant="standard"
+                          color="warning"
+                          focused
+                          error={!!deleteAccountErrors.deleteUsername}
+                          helperText={deleteAccountErrors.deleteUsername?.message}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex justify-center mt-8">
+                    <Button variant="contained" color="error" type="submit">
+                      Delete your account
+                    </Button>
+                  </div>
+                </form>
+              </Box>
+            </Modal>
           </div>
         </div>
       </div>
