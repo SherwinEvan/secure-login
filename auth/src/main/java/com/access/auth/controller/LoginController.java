@@ -65,6 +65,7 @@ public class LoginController {
 		}
 		return ResponseEntity.ok("Invalid Credentials!");
 	}
+	
 
 	@GetMapping("/")
 	public String home(Principal principal) {
@@ -75,6 +76,23 @@ public class LoginController {
 			log.info("Authenticated!");
 			String currentUserName = authentication.getName();
 			return currentUserName;
+		} else {
+			// User is not authenticated
+			log.info("Not Authenticated!");
+		}
+
+		return "Not logged in!";
+	}
+	
+	@GetMapping("/email")
+	public String email(Principal principal) {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication.isAuthenticated()) {
+			// User is authenticated
+			log.info("Authenticated!");
+			String currentUserName = authentication.getName();
+			return userRepo.findEmailByuserName(currentUserName);
 		} else {
 			// User is not authenticated
 			log.info("Not Authenticated!");

@@ -73,7 +73,7 @@ export default function SignUp() {
         if (res.status === 200) {
           toast.success(
             <div>
-              Registration success! <br /> Please login to continue.
+              Signed up successfully! <br /> Please login to continue.
             </div>,
             {
               position: "top-center",
@@ -275,7 +275,6 @@ export default function SignUp() {
                     />
                   </Grid>
                 </Grid>
-
                 <Button
                   type="submit"
                   fullWidth

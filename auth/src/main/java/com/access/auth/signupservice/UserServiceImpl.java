@@ -85,8 +85,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserEntity findUserByEmail(String email) {
-		return userRepo.findByEmail(email);
+	public UserEntity findByUserName(String userName) {
+		return userRepo.findByUserName(userName);
 	}
 
 	@Override
@@ -134,5 +134,15 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public String getTokenByUser(UserEntity user) {
 		return verficationTokenRepo.findByUser(user).getToken();
+	}
+
+	@Override
+	public boolean deleteUserByUsername(String username) {
+		UserEntity user = userRepo.findByUserName(username);
+		if(user != null) {
+			userRepo.delete(user);
+			return true;
+		}
+		return false;
 	}
 }

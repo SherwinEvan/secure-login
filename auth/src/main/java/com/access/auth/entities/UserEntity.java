@@ -1,9 +1,16 @@
 package com.access.auth.entities;
 
+import java.util.List;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Entity
@@ -18,6 +25,12 @@ public class UserEntity {
 	private String password;
 	private String role;
 	private boolean enabled = false;
+	
+	//REMOVE THESE 3 LINES INCASE OF BROKEN INTEGRITY
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<VerificationToken> verificationTokens;
+
 
 	public String getUserName() {
 		return userName;

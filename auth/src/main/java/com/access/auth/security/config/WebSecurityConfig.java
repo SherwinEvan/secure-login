@@ -49,8 +49,8 @@ public class WebSecurityConfig {
 	
 	private static final String[] WHITE_LIST_URL = {
 			"/auth/**",
-			"/login/",
-			"/logout"
+			"/login/**",
+			"/logout/**"
 	};
 
     @Bean

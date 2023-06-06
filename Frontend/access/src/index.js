@@ -7,6 +7,7 @@ import Login from './login';
 import HomePage from './home';
 import { ToastContainer } from 'react-toastify';
 import ReadPDF from './readPDF';
+import MyAccount from './myAccount';
 
 axios.defaults.baseURL="http://localhost:8080/";
 axios.defaults.withCredentials = true;
@@ -20,6 +21,7 @@ export default function RouteApp() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/read" element={<ReadPDF />} />
+        <Route path="/account" element={<MyAccount />} />
       </Routes>
     </Router>
     <ToastContainer />
