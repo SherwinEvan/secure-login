@@ -81,7 +81,7 @@ public class SignUpController {
 	@PostMapping("/resetPassword")
 	public String resetPassword(@RequestBody PasswordModel passwordModel, HttpServletRequest request) {
 		UserEntity user = userService.findByUserName(passwordModel.getUserName());
-		String url = "";
+		String url = "noUrl";
 		if (user != null) {
 			String token = UUID.randomUUID().toString();
 			userService.createPasswordResetTokenForUser(user, token);
@@ -91,12 +91,13 @@ public class SignUpController {
 	}
 
 	@PostMapping("/savePassword")
-	public String savePassword(@RequestBody PasswordModel passwordModel) {
-
-		if (userService.validatePasswordResetToken(passwordModel.getOldToken())) {
-			return "Bad ttttoken";
+	public String savePassword(@RequestParam("token") String token, @RequestBody PasswordModel passwordModel) {
+		
+		if (!userService.validatePasswordResetToken(token)) {
+			return "Old token";
 		}
-		Optional<UserEntity> user = userService.getUserByPasswordResetToken(passwordModel.getOldToken());
+		
+		Optional<UserEntity> user = userService.getUserByPasswordResetToken(token);
 
 		if (user.isPresent()) {
 			userService.changePassword(user.get(), passwordModel.getNewPassword());

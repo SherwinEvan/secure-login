@@ -16,7 +16,10 @@ import com.access.auth.repositories.PasswordResetTokenRepo;
 import com.access.auth.repositories.UserRepo;
 import com.access.auth.repositories.VerificationTokenRepo;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
 	@Autowired
@@ -98,18 +101,21 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean validatePasswordResetToken(String token) {
+		
 		PasswordResetToken passwordResetToken = passwordResetTokenRepo.findByToken(token);
 
-		if (passwordResetToken == null)
-			return false;
-
-		Calendar cal = Calendar.getInstance();
-
-		if (passwordResetToken.getExpirationTime().getTime() - cal.getTime().getTime() <= 0) {
-			passwordResetTokenRepo.delete(passwordResetToken);
+		if (passwordResetToken == null) {
 			return false;
 		}
 
+		Calendar cal = Calendar.getInstance();
+
+
+		if (passwordResetToken.getExpirationTime().getTime() - cal.getTime().getTime() <= 0) {
+			log.info("Entered");
+			passwordResetTokenRepo.delete(passwordResetToken);
+			return false;
+		}
 		return true;
 	}
 
