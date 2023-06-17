@@ -87,7 +87,7 @@ export default function SignUp() {
             }
           );
 
-          setTimeout(() => (window.location = "/login"), 3000);
+          //setTimeout(() => (window.location = "/login"), 3000);
         }
       })
       .catch((error) => {
@@ -193,7 +193,7 @@ export default function SignUp() {
                           required
                           fullWidth
                           name="password"
-                          label="Password"
+                          label="New Password"
                           id="password"
                           autoComplete="new-password"
                           type={showPassword ? "text" : "password"}
@@ -236,7 +236,7 @@ export default function SignUp() {
                           required
                           fullWidth
                           name="confirmPassword"
-                          label="Confirm Password"
+                          label="Confirm New Password"
                           id="confirmPassword"
                           autoComplete="new-password"
                           type="password"
