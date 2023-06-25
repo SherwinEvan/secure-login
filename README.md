@@ -1,11 +1,30 @@
-# Secure Authentication 
-* Created an production grade, robust authentication application that allows for route protection.
-* Built with Spring Boot's Spring Security. 
-* This system design follows the use of stateless session management with loosly coupled service classes where data is stored in encrypted form in the MySQL database.
-* Authorization is achived through randomly generated RSA key encrypted JWTs.
-* Generated JWTs is stored in httpOnly cookies, whih can only be accessed and manipulated by the server.
-* Endpoints to create a new user, activate user, login, password reset, logout and delete user are defined.
-* Built a frontend client using ReactJS.
+# Secure Authentication System
+
+## Overview
+- Production-grade authentication application with route protection.
+- Built with Spring Boot's Spring Security framework for enhanced security.
+- Modern and intuitive frontend developed using ReactJS.
+- Utilizes stateless session management for scalability and security.
+- User data stored securely in an encrypted format within a MySQL database.
+- Authorization implemented through randomly generated RSA key encrypted JSON Web Tokens (JWTs).
+- JWTs securely stored in httpOnly cookies, preventing unauthorized access.
+- Provides endpoints for user creation, account activation, login, password reset, logout, and account deletion.
+- Efficient controller process flow for streamlined user management and authentication tasks.
+
+## Getting Started
+To set up the authentication system on your local machine for development and testing, follow these steps:
+
+### Prerequisites
+- Node.js and npm (Node Package Manager)
+- Spring Tool Suite (or any Java IDE)
+- MySQL
+
+### Installation Steps
+1. Fork a copy of the repository to your local machine.
+2. Open the frontend directory in the terminal and execute the command `npm start` to start the frontend application.
+3. Open the backend folder as a project in Spring Tool Suite (or your preferred Java IDE).
+4. Modify the MySQL connection settings in the application.properties file to match your local MySQL configuration.
+5. Right-click on the backend package and select "Run as Spring Boot App" to start the backend server.
 
 ## Code and Resources Used 
 **Spring Boot Version:** 3.0.4   
@@ -14,55 +33,42 @@
 **ReactJS Version:** 18.0.2  
 **Packages:** MaterialUI, Axios, Toastify and React Hook Form.
 
+## Backend Implementation
+The backend of the authentication system is built using Spring Boot's Spring Security framework. The codebase follows industry-standard practices and leverages various dependencies to achieve robustness and security.
 
-## Controller process flow
-There are 3 controller classes, each with their own purpose of handling SignUp, Login, and Logout.  
-* SignUp controller
-   * Has an endpoint to add a user account in the database with the account activation status as disabled.
-   * Creating a new user will trigger a event listener that generates a link with a random token which is valid only for a limited time and single use that has to be clicked to activate the account.
-   * Has an endpoint that resends the verification link on request and when done so, makes the older link invalid. This is actived to OneToOne mapping in the database tables.
-   * Has an endpoint that allows for password reset through a randomly generated link and another to change the password with an already logged in account.
-<br/>
+### Controller Process Flow
+The backend implementation consists of three controller classes, each responsible for a specific set of operations. These controllers work together to handle user management and authentication tasks. The process flow for each controller is as follows:
 
-* Login controller
-   * Has an endpoint login a user and get current security context.
-   * Logging user generates a JWT encrypted using a locally generated RSA key.
-   * The generated JWT is assigned to a locally created httpOnly cookie and this cookie is sent to be stored in the client. 
-   * Further requests are sent along with this httpOnly cookie and this cookie is unpacked by the server and the JWT is decrypted to checck for it's validity.
-<br/>
+1. **SignUp Controller:**
+   - The SignUpController provides endpoints for user registration and account activation.
+   - When a new user signs up, an account is created in the database with the account activation status set to disabled.
+   - After user creation, an event listener is triggered, generating a unique link with a random token.
+   - The link is sent to the user's registered email address for account activation.
+   - The token in the link is associated with the user account using a OneToOne mapping in the database tables.
+   - If the user requests a resend of the verification link, the previous link is invalidated, and a new link is generated and sent.
 
-* Logout controller
-   * Has an endpoint to logout a user.
-   * A logout request invalidates the JWT and the httpOnly cookie is deleted from the client.
-   * Also has an endpoint to delete an user, where an user account can be deleted by themselves if there is proper authorization.
+2. **Login Controller:**
+   - The LoginController handles user login and session initiation.
+   - When a user successfully logs in, a JSON Web Token (JWT) is generated using a locally generated RSA key.
+   - The JWT contains encrypted user information and serves as proof of authentication.
+   - The generated JWT is assigned to an httpOnly cookie, which is sent to the client for storage.
+   - Subsequent requests from the client include the encrypted cookie, allowing the server to validate the authenticity of the user.
 
-## Frontend 
-* Build the required frontend for the API defined.
-* Made with ReactJS and used MaterialUI components to achieve styling.
-* Messages/Replies from the server is displayed as toast messages.
-* Strict form validation is done with the help of react-hook-form to ensure no misinput is allowed to be sent as an request.
-* Full responsive on mobile devices aswell.
+3. **Logout Controller:**
+   - The LogoutController provides endpoints for user logout and account deletion.
+   - When a user logs out, the JWT is invalidated, and the httpOnly cookie is deleted from the client, ensuring secure session termination.
+   - The controller also includes an endpoint for deleting user accounts, which requires proper authorization to prevent misuse.
 
-## Getting Started
+## Frontend Implementation
+The frontend of the authentication system is developed using ReactJS, a popular JavaScript library for building user interfaces. The frontend is designed with a focus on user experience and incorporates modern UI components and validation techniques.
 
-These instructions will give you a copy of the project up and running on
-your local machine for development and testing purposes.
+- **Responsive Design:** The frontend is fully responsive and optimized for various devices, including mobile devices. This ensures a seamless user experience across different screen sizes and platforms.
 
-### Prerequisites
+- **MaterialUI Components:** The frontend utilizes MaterialUI components to achieve an aesthetically pleasing and intuitive user interface. These components enhance the visual appeal and usability of the authentication system.
 
-Requirements for the software and other tools to build and run the app 
-- Package Manager (Node + Npm)
-- Spring Tool Suite
-- MySQL
+- **Form Validation with React Hook Form:** Strict form validation is implemented using the React Hook Form library. This ensures that users provide accurate and valid information during registration, login, and password reset processes.
 
-### Installing
-
-* Fork a copy of the repository to your machine.
-* Open frontend directory in the terminal.
-* Execute the following command.
-
-    `npm start`
-
-* Open the backend folder as a project in Spring Tool Suite.
-* Change the MySQL user name, password and database to match the one in your machine's, in the application.properties file.
-* Right click on the package and select Run as Spring Boot App.
+## Sample Images
+![alt-text](https://github.com/SherwinEvan/secure-login/blob/1f732218635cf4ebece797d1b44b3dcc8b95234d/Images/login.png)
+![alt-text](https://github.com/SherwinEvan/secure-login/blob/1f732218635cf4ebece797d1b44b3dcc8b95234d/Images/signup.png)
+![alt-text](https://github.com/SherwinEvan/secure-login/blob/1f732218635cf4ebece797d1b44b3dcc8b95234d/Images/account.png)
